@@ -1,0 +1,47 @@
+pipeline {
+  agent any
+  stages {
+    stage('Setup') {
+      steps {
+        sh 'python3 -V || true'
+        sh 'pip3 install -r requirements.txt'
+      }
+    }
+    stage('Start API') {
+      steps {
+        sh 'nohup uvicorn app.api:app --port 8000 >/dev/null 2>&1 &'
+        sh 'sleep 3'
+      }
+    }
+    stage('Unit & Integration') {
+      steps {
+        sh 'pytest tests/unit -q'
+        sh 'pytest tests/integration -q'
+      }
+    }
+    stage('API') {
+      steps {
+        sh 'pytest tests/api -q'
+      }
+    }
+    stage('UI (headless)') {
+      steps {
+        sh 'pytest tests/ui -q'
+      }
+    }
+    stage('Archive Reports') {
+      steps {
+        sh 'pytest --junitxml=report.xml || true'
+        junit 'report.xml'
+      }
+    }
+  }
+  post {
+    always {
+      echo 'Pipeline finished.'
+    }
+    failure {
+      echo 'Marking build as failed.'
+    }
+  }
+}

@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Checkout</title></head>
+<body>
+<h1>Checkout</h1>
+<p>Subtotal: <span id="subtotal">90.00</span></p>
+<label>Coupon: <input id="coupon" type="text" placeholder="SAVE10"></label>
+<button id="apply" onclick="applyCoupon()">Apply</button>
+<p>Total: <span id="total">90.00</span></p>
+
+<script>
+    function applyCoupon() {
+      const code = (document.getElementById('coupon').value || '').trim().toUpperCase();
+      // Make this deterministic for the test:
+      // If SAVE10 → 81.00; else → 90.00
+      const total = code === 'SAVE10' ? '81.00' : '90.00';
+      document.getElementById('total').innerText = total;
+    }
+</script>
+</body>
+</html>

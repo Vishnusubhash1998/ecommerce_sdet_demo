@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pytest
+requests
+pydantic
+selenium
+webdriver-manager
+locust
